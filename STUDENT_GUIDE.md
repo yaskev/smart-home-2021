@@ -59,6 +59,13 @@ class ReadFromFile
 class CheckIsHall
 ```
 
+**Да**
+
+```java
+class FileReader
+class HallChecker
+```
+
 ### Называйте пакеты [строчными](https://google.github.io/styleguide/javaguide.html#s5.2.1-package-names) буквами
 
 **Нет**
