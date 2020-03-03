@@ -1,3 +1,7 @@
+# Эффективная работа с IDE
+
+Используйте [shortcut-ы](https://blog.jetbrains.com/idea/2020/03/top-15-intellij-idea-shortcuts/)
+
 # Организация Кода
 
 - Называйте пулл реквест Homework + ее номер.
