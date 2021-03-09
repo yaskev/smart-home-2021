@@ -3,6 +3,8 @@ package ru.sbt.mipt.oop;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import ru.sbt.mipt.oop.equipment.*;
+
 public class SmartHome {
     Collection<Room> rooms;
 
