@@ -1,12 +1,12 @@
 package ru.sbt.mipt.oop.events;
 
-import ru.sbt.mipt.oop.SensorEventType;
+import ru.sbt.mipt.oop.*;
 
-public class LightOffEvent implements Event {
+public class DoorClosedEvent implements Event {
     private final String objectId;
-    private final SensorEventType eventType = SensorEventType.LIGHT_OFF;
+    private final SensorEventType eventType = SensorEventType.DOOR_CLOSED;
 
-    public LightOffEvent(String objectId) {
+    public DoorClosedEvent(String objectId) {
         this.objectId = objectId;
     }
 
