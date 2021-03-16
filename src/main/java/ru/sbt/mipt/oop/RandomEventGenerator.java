@@ -4,16 +4,6 @@ import ru.sbt.mipt.oop.events.Event;
 import ru.sbt.mipt.oop.events.*;
 
 public class RandomEventGenerator implements EventGenerator {
-    private final SmartHome smartHome;
-    private final Logger logger;
-    private final CommandSender sender;
-
-    public RandomEventGenerator(SmartHome smartHome, Logger logger, CommandSender sender) {
-        this.logger = logger;
-        this.smartHome = smartHome;
-        this.sender = sender;
-    }
-
     @Override
     public Event generate() {
         if (Math.random() < 0.05) {
@@ -23,16 +13,16 @@ public class RandomEventGenerator implements EventGenerator {
         final int eventNumber = (int) (4 * Math.random());
 
         if (eventNumber < 1) {
-            return new LightOnEvent(smartHome, logger, objectId);
+            return new LightOnEvent(objectId);
         }
         else if (eventNumber < 2) {
-            return new LightOffEvent(smartHome, logger, objectId);
+            return new LightOffEvent(objectId);
         }
         else if (eventNumber < 3) {
-            return new DoorOpenedEvent(smartHome, logger, objectId);
+            return new DoorOpenedEvent(objectId);
         }
         else {
-            return new DoorClosedEventWithLightOff(smartHome, logger, objectId, sender);
+            return new DoorClosedEvent(objectId);
         }
     }
 }
