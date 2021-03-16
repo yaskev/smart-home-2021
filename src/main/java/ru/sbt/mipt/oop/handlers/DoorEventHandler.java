@@ -17,13 +17,17 @@ public class DoorEventHandler implements EventHandler {
     }
 
     @Override
-    public void handleEvent(Event event) throws IOException {
+    public void handleEvent(Event event) {
         if (event.getEventType() == SensorEventType.DOOR_OPEN) {
             for (Room room : smartHome.getRooms()) {
                 for (Door door : room.getDoors()) {
                     if (door.getId().equals(event.getObjectId())) {
                         door.setOpen(true);
-                        logger.log("Door " + door.getId() + " in room " + room.getName() + " was opened.");
+                        try {
+                            logger.log("Door " + door.getId() + " in room " + room.getName() + " was opened.");
+                        } catch (IOException e) {
+                            System.err.println(e.toString());
+                        }
                     }
                 }
             }
@@ -32,7 +36,11 @@ public class DoorEventHandler implements EventHandler {
                 for (Door door : room.getDoors()) {
                     if (door.getId().equals(event.getObjectId())) {
                         door.setOpen(false);
-                        logger.log("Door " + door.getId() + " in room " + room.getName() + " was closed.");
+                        try {
+                            logger.log("Door " + door.getId() + " in room " + room.getName() + " was closed.");
+                        } catch (IOException e) {
+                            System.err.println(e.toString());
+                        }
                     }
                 }
             }
