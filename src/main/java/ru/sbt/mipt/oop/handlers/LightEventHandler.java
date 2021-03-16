@@ -19,13 +19,17 @@ public class LightEventHandler implements EventHandler {
     }
 
     @Override
-    public void handleEvent(Event event) throws IOException {
+    public void handleEvent(Event event) {
         if (event.getEventType() == SensorEventType.LIGHT_ON) {
             for (Room room : smartHome.getRooms()) {
                 for (Light light : room.getLights()) {
                     if (light.getId().equals(event.getObjectId())) {
                         light.setOn(true);
-                        logger.log("Light " + light.getId() + " in room " + room.getName() + " was turned on.");
+                        try {
+                            logger.log("Light " + light.getId() + " in room " + room.getName() + " was turned on.");
+                        } catch (IOException e) {
+                            System.err.println(e.toString());
+                        }
                     }
                 }
             }
@@ -34,7 +38,12 @@ public class LightEventHandler implements EventHandler {
                 for (Light light : room.getLights()) {
                     if (light.getId().equals(event.getObjectId())) {
                         light.setOn(false);
-                        logger.log("Light " + light.getId() + " in room " + room.getName() + " was turned off.");
+                        try {
+                            logger.log("Light " + light.getId() + " in room " + room.getName() + " was turned off.");
+                        } catch (IOException e) {
+                            System.err.println(e.toString());
+                        }
+
                     }
                 }
             }
