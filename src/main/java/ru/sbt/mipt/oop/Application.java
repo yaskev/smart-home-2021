@@ -19,9 +19,9 @@ public class Application {
         EventGenerator generator = new RandomEventGenerator();
 
         Collection<EventHandler> eventHandlers = new ArrayList<>();
-        eventHandlers.add(new DoorEventHandler(smartHome, logger));
+        eventHandlers.add(new DoorEventHandler(smartHome));
         eventHandlers.add(new HallDoorEventHandler(smartHome, sender));
-        eventHandlers.add(new LightEventHandler(smartHome, logger));
+        eventHandlers.add(new LightEventHandler(smartHome));
 
         EventLoop loop = new EventLoop(generator, eventHandlers);
         loop.runLoop();

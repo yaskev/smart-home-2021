@@ -1,52 +1,30 @@
 package ru.sbt.mipt.oop.handlers;
 
-import ru.sbt.mipt.oop.Logger;
 import ru.sbt.mipt.oop.SensorEventType;
 import ru.sbt.mipt.oop.SmartHome;
+import ru.sbt.mipt.oop.action.Action;
 import ru.sbt.mipt.oop.equipment.Light;
-import ru.sbt.mipt.oop.equipment.Room;
 import ru.sbt.mipt.oop.events.Event;
-
-import java.io.IOException;
 
 public class LightEventHandler implements EventHandler {
     private final SmartHome smartHome;
-    private final Logger logger;
 
-    public LightEventHandler(SmartHome smartHome, Logger logger) {
+    public LightEventHandler(SmartHome smartHome) {
         this.smartHome = smartHome;
-        this.logger = logger;
     }
 
     @Override
     public void handleEvent(Event event) {
-        if (event.getEventType() == SensorEventType.LIGHT_ON) {
-            for (Room room : smartHome.getRooms()) {
-                for (Light light : room.getLights()) {
-                    if (light.getId().equals(event.getObjectId())) {
-                        light.setOn(true);
-                        try {
-                            logger.log("Light " + light.getId() + " in room " + room.getName() + " was turned on.");
-                        } catch (IOException e) {
-                            System.err.println(e.toString());
-                        }
-                    }
-                }
-            }
-        } else if (event.getEventType() == SensorEventType.LIGHT_OFF) {
-            for (Room room : smartHome.getRooms()) {
-                for (Light light : room.getLights()) {
-                    if (light.getId().equals(event.getObjectId())) {
-                        light.setOn(false);
-                        try {
-                            logger.log("Light " + light.getId() + " in room " + room.getName() + " was turned off.");
-                        } catch (IOException e) {
-                            System.err.println(e.toString());
-                        }
+        if (event.getEventType() == SensorEventType.LIGHT_OFF || event.getEventType() == SensorEventType.LIGHT_ON) {
+            boolean isLightOn = event.getEventType() == SensorEventType.LIGHT_ON;
+            String objId = event.getObjectId();
 
-                    }
+            Action updateLightState = (object) -> {
+                if (object instanceof Light && ((Light) object).getId().equals(objId)) {
+                    ((Light)object).setOn(isLightOn);
                 }
-            }
+            };
+            smartHome.execute(updateLightState);
         }
     }
 }

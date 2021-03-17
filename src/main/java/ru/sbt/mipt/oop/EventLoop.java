@@ -3,7 +3,6 @@ package ru.sbt.mipt.oop;
 import ru.sbt.mipt.oop.events.Event;
 import ru.sbt.mipt.oop.handlers.EventHandler;
 
-import java.io.IOException;
 import java.util.Collection;
 
 public class EventLoop {
@@ -15,14 +14,14 @@ public class EventLoop {
         this.generator = generator;
     }
 
-    public void runLoop() throws IOException {
-        Event event = this.generator.generate();
+    public void runLoop() {
+        Event event = generator.generate();
 
         while (event != null) {
             for (EventHandler handler : handlers) {
                 handler.handleEvent(event);
             }
-            event = this.generator.generate();
+            event = generator.generate();
         }
     }
 }
