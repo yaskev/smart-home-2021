@@ -18,7 +18,15 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
 public class EventHandlingTest {
-    private final SmartHome smartHome = new JsonHomeReader("smart-home-1.js").read();
+    private final SmartHome smartHome = new SmartHome();
+
+    private final Door doorWithId1 = new Door(false, "1");
+    private final Door doorWithId2 = new Door(true, "2");
+    private final Door hallDoor = new Door(true, "3");
+
+    private final Light lightWithId1 = new Light("1", true);
+    private final Light lightWithId2 = new Light("2", false);
+
     private final CommandSender sender = new ConsoleCommandSender();
     Collection<EventHandler> eventHandlers = new ArrayList<>();
 
@@ -28,121 +36,127 @@ public class EventHandlingTest {
         eventHandlers.add(new LightEventHandler(smartHome));
     }
 
+    void fillSmartHome() {
+        Room justRoom = new Room(Collections.singletonList(lightWithId1),
+                                Arrays.asList(doorWithId1, doorWithId2),
+                                "kitchen");
+        Room hall = new Room (Collections.singletonList(lightWithId2),
+                                Collections.singletonList(hallDoor),
+                                "hall");
+        smartHome.addRoom(justRoom);
+        smartHome.addRoom(hall);
+    }
+
     @Test
     void testLightOn() {
-        EventGenerator generator = new FixedEventGenerator(Arrays.asList(new LightOnEvent("1"),
-                                                                        new LightOnEvent("3")));
+        assertTrue(lightWithId1.isOn());
+        assertFalse(lightWithId2.isOn());
+
+        EventGenerator generator = new FixedEventGenerator(Collections.singletonList(new LightOnEvent("2")));
         addHandlers();
+        fillSmartHome();
 
         EventLoop loop = new EventLoop(generator, eventHandlers);
         loop.runLoop();
-        for (Room room : smartHome.getRooms()) {
-            Light light = room.getLightWithId("1");
-            if (light != null) {
-                assertTrue(light.isOn());
-            }
-            light = room.getLightWithId("3");
-            if (light != null) {
-                assertTrue(light.isOn());
-            }
-        }
+
+        assertTrue(lightWithId1.isOn());
+        assertTrue(lightWithId2.isOn());
     }
 
     @Test
     void testLightOff() {
-        EventGenerator generator = new FixedEventGenerator(Arrays.asList(new LightOffEvent("4"),
+        assertTrue(lightWithId1.isOn());
+        assertFalse(lightWithId2.isOn());
+
+        EventGenerator generator = new FixedEventGenerator(Arrays.asList(new LightOffEvent("1"),
                                                                         new LightOffEvent("2")));
         addHandlers();
+        fillSmartHome();
 
         EventLoop loop = new EventLoop(generator, eventHandlers);
         loop.runLoop();
-        for (Room room : smartHome.getRooms()) {
-            Light light = room.getLightWithId("2");
-            if (light != null) {
-                assertFalse(light.isOn());
-            }
-            light = room.getLightWithId("4");
-            if (light != null) {
-                assertFalse(light.isOn());
-            }
-        }
+
+        assertFalse(lightWithId1.isOn());
+        assertFalse(lightWithId2.isOn());
     }
 
     @Test
     void testDoorOpened() {
+        assertFalse(doorWithId1.isOpen());
+        assertTrue(doorWithId2.isOpen());
+        assertTrue(hallDoor.isOpen());
+
         EventGenerator generator = new FixedEventGenerator(Arrays.asList(new DoorOpenedEvent("1"),
                                                                         new DoorOpenedEvent("3")));
         addHandlers();
+        fillSmartHome();
 
         EventLoop loop = new EventLoop(generator, eventHandlers);
         loop.runLoop();
-        for (Room room : smartHome.getRooms()) {
-            Door door = room.getDoorWithId("1");
-            if (door != null) {
-                assertTrue(door.isOpen());
-            }
-            door = room.getDoorWithId("3");
-            if (door != null) {
-                assertTrue(door.isOpen());
-            }
-        }
+
+        assertTrue(doorWithId1.isOpen());
+        assertTrue(doorWithId2.isOpen());
+        assertTrue(hallDoor.isOpen());
     }
 
     @Test
     void testDoorClosed() {
+        assertFalse(doorWithId1.isOpen());
+        assertTrue(doorWithId2.isOpen());
+        assertTrue(hallDoor.isOpen());
+
         EventGenerator generator = new FixedEventGenerator(Arrays.asList(new DoorClosedEvent("1"),
                                                                         new DoorClosedEvent("3")));
         addHandlers();
+        fillSmartHome();
 
         EventLoop loop = new EventLoop(generator, eventHandlers);
         loop.runLoop();
-        for (Room room : smartHome.getRooms()) {
-            Door door = room.getDoorWithId("1");
-            if (door != null) {
-                assertFalse(door.isOpen());
-            }
-            door = room.getDoorWithId("3");
-            if (door != null) {
-                assertFalse(door.isOpen());
-            }
-        }
+
+        assertFalse(doorWithId1.isOpen());
+        assertTrue(doorWithId2.isOpen());
+        assertFalse(hallDoor.isOpen());
     }
 
     @Test
     void testHallDoorClosed() {
-        EventGenerator generator = new FixedEventGenerator(Collections.singletonList(new DoorClosedEvent("4")));
+        assertFalse(doorWithId1.isOpen());
+        assertTrue(doorWithId2.isOpen());
+        assertTrue(hallDoor.isOpen());
+
+        EventGenerator generator = new FixedEventGenerator(Collections.singletonList(new DoorClosedEvent("3")));
         addHandlers();
+        fillSmartHome();
 
         EventLoop loop = new EventLoop(generator, eventHandlers);
         loop.runLoop();
-        for (Room room : smartHome.getRooms()) {
-            Door door = room.getDoorWithId("4");
-            if (door != null) {
-                assertFalse(door.isOpen());
-            }
-            for (Light light : room.getLights()) {
-                assertFalse(light.isOn());
-            }
-        }
+
+        assertFalse(doorWithId1.isOpen());
+        assertTrue(doorWithId2.isOpen());
+        assertFalse(hallDoor.isOpen());
+
+        assertFalse(lightWithId1.isOn());
+        assertFalse(lightWithId2.isOn());
     }
 
     @Test
     void testNotHallDoorClosed() {
-        EventGenerator generator = new FixedEventGenerator(Arrays.asList(new LightOnEvent("1"),
-                                                                        new DoorClosedEvent("3")));
+        assertFalse(doorWithId1.isOpen());
+        assertTrue(doorWithId2.isOpen());
+        assertTrue(hallDoor.isOpen());
+
+        EventGenerator generator = new FixedEventGenerator(Collections.singletonList(new DoorClosedEvent("2")));
         addHandlers();
+        fillSmartHome();
 
         EventLoop loop = new EventLoop(generator, eventHandlers);
         loop.runLoop();
-        for (Room room : smartHome.getRooms()) {
-            Door door = room.getDoorWithId("3");
-            if (door != null) {
-                assertFalse(door.isOpen());
-            }
-            Light light = room.getLightWithId("1");
-            if (light != null) {
-                assertTrue(light.isOn());
-            }
-        }
+
+        assertFalse(doorWithId1.isOpen());
+        assertFalse(doorWithId2.isOpen());
+        assertTrue(hallDoor.isOpen());
+
+        assertTrue(lightWithId1.isOn());
+        assertFalse(lightWithId2.isOn());
     }
 }

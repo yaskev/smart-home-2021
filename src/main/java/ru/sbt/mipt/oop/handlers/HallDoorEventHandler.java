@@ -2,6 +2,7 @@ package ru.sbt.mipt.oop.handlers;
 
 import ru.sbt.mipt.oop.*;
 import ru.sbt.mipt.oop.action.Action;
+import ru.sbt.mipt.oop.equipment.Door;
 import ru.sbt.mipt.oop.equipment.Light;
 import ru.sbt.mipt.oop.equipment.Room;
 import ru.sbt.mipt.oop.events.Event;
@@ -25,11 +26,15 @@ public class HallDoorEventHandler implements EventHandler {
                     sender.sendCommand(command);
                 }
             };
+
             Action checkIfHallDoor = (object) -> {
-                if (object instanceof Room && ((Room)object).getName().equals("hall")) {
-                    if (((Room)object).hasDoorWithId(event.getObjectId())) {
-                        smartHome.execute(turnOffAllLight);
-                    }
+                if (object instanceof Room && ((Room) object).getName().equals("hall")) {
+                    Action onHallDoorClosed = (obj) -> {
+                        if (obj instanceof Door && ((Door) obj).getId().equals(event.getObjectId())) {
+                            smartHome.execute(turnOffAllLight);
+                        }
+                    };
+                    ((Room)object).execute(onHallDoorClosed);
                 }
             };
 

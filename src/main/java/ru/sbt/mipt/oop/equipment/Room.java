@@ -16,14 +16,6 @@ public class Room implements Actionable {
         this.name = name;
     }
 
-    public Collection<Light> getLights() {
-        return lights;
-    }
-
-    public Collection<Door> getDoors() {
-        return doors;
-    }
-
     public String getName() {
         return name;
     }
@@ -38,27 +30,5 @@ public class Room implements Actionable {
         for (Door door : doors) {
             door.execute(action);
         }
-    }
-
-    public boolean hasDoorWithId(String id) {
-        return getDoorWithId(id) != null;
-    }
-
-    public Door getDoorWithId(String id) {
-        for (Door door : doors) {
-            if (door.getId().equals(id)) {
-                return door;
-            }
-        }
-        return null;
-    }
-
-    public Light getLightWithId(String id) {
-        for (Light light : lights) {
-            if (light.getId().equals(id)) {
-                return light;
-            }
-        }
-        return null;
     }
 }
