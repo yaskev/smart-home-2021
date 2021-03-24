@@ -6,6 +6,7 @@ import ru.sbt.mipt.oop.equipment.Door;
 import ru.sbt.mipt.oop.equipment.Light;
 import ru.sbt.mipt.oop.equipment.Room;
 import ru.sbt.mipt.oop.events.Event;
+import ru.sbt.mipt.oop.events.SensorEvent;
 
 public class HallDoorEventHandler implements EventHandler {
     private final SmartHome smartHome;
@@ -18,7 +19,7 @@ public class HallDoorEventHandler implements EventHandler {
 
     @Override
     public void handleEvent(Event event) {
-        if (event.getEventType() == SensorEventType.DOOR_CLOSED) {
+        if (event.getEventType() == EventType.DOOR_CLOSED) {
             Action turnOffAllLight = (object) -> {
                 if (object instanceof Light) {
                     ((Light)object).setOn(false);
@@ -30,7 +31,7 @@ public class HallDoorEventHandler implements EventHandler {
             Action checkIfHallDoor = (object) -> {
                 if (object instanceof Room && ((Room) object).getName().equals("hall")) {
                     Action onHallDoorClosed = (obj) -> {
-                        if (obj instanceof Door && ((Door) obj).getId().equals(event.getObjectId())) {
+                        if (obj instanceof Door && ((Door) obj).getId().equals(((SensorEvent)event).getObjectId())) {
                             smartHome.execute(turnOffAllLight);
                         }
                     };

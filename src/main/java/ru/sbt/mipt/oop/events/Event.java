@@ -1,9 +1,7 @@
 package ru.sbt.mipt.oop.events;
 
-import ru.sbt.mipt.oop.SensorEventType;
+import ru.sbt.mipt.oop.EventType;
 
 public interface Event {
-    SensorEventType getEventType();
-
-    String getObjectId();
+    EventType getEventType();
 }

@@ -56,8 +56,8 @@ public class EventHandlingTest {
         addHandlers();
         fillSmartHome();
 
-        EventLoop loop = new EventLoop(generator, eventHandlers);
-        loop.runLoop();
+        smartHome.setEventLoop(new EventLoop(generator, eventHandlers));
+        smartHome.runLoop();
 
         assertTrue(lightWithId1.isOn());
         assertTrue(lightWithId2.isOn());
@@ -73,8 +73,8 @@ public class EventHandlingTest {
         addHandlers();
         fillSmartHome();
 
-        EventLoop loop = new EventLoop(generator, eventHandlers);
-        loop.runLoop();
+        smartHome.setEventLoop(new EventLoop(generator, eventHandlers));
+        smartHome.runLoop();
 
         assertFalse(lightWithId1.isOn());
         assertFalse(lightWithId2.isOn());
@@ -91,8 +91,8 @@ public class EventHandlingTest {
         addHandlers();
         fillSmartHome();
 
-        EventLoop loop = new EventLoop(generator, eventHandlers);
-        loop.runLoop();
+        smartHome.setEventLoop(new EventLoop(generator, eventHandlers));
+        smartHome.runLoop();
 
         assertTrue(doorWithId1.isOpen());
         assertTrue(doorWithId2.isOpen());
@@ -110,8 +110,8 @@ public class EventHandlingTest {
         addHandlers();
         fillSmartHome();
 
-        EventLoop loop = new EventLoop(generator, eventHandlers);
-        loop.runLoop();
+        smartHome.setEventLoop(new EventLoop(generator, eventHandlers));
+        smartHome.runLoop();
 
         assertFalse(doorWithId1.isOpen());
         assertTrue(doorWithId2.isOpen());
@@ -128,8 +128,8 @@ public class EventHandlingTest {
         addHandlers();
         fillSmartHome();
 
-        EventLoop loop = new EventLoop(generator, eventHandlers);
-        loop.runLoop();
+        smartHome.setEventLoop(new EventLoop(generator, eventHandlers));
+        smartHome.runLoop();
 
         assertFalse(doorWithId1.isOpen());
         assertTrue(doorWithId2.isOpen());
@@ -149,8 +149,8 @@ public class EventHandlingTest {
         addHandlers();
         fillSmartHome();
 
-        EventLoop loop = new EventLoop(generator, eventHandlers);
-        loop.runLoop();
+        smartHome.setEventLoop(new EventLoop(generator, eventHandlers));
+        smartHome.runLoop();
 
         assertFalse(doorWithId1.isOpen());
         assertFalse(doorWithId2.isOpen());
