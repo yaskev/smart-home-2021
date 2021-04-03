@@ -4,6 +4,7 @@ import ru.sbt.mipt.oop.handlers.DoorEventHandler;
 import ru.sbt.mipt.oop.handlers.EventHandler;
 import ru.sbt.mipt.oop.handlers.HallDoorEventHandler;
 import ru.sbt.mipt.oop.handlers.LightEventHandler;
+import ru.sbt.mipt.oop.wrappers.NotWrappedHandler;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,7 +22,7 @@ public class Application {
         eventHandlers.add(new HallDoorEventHandler(smartHome, sender));
         eventHandlers.add(new LightEventHandler(smartHome));
 
-        smartHome.setEventLoop(new EventLoop(generator, eventHandlers));
-        smartHome.runLoop();
+        EventLoop loop = new EventLoop(generator, new NotWrappedHandler(eventHandlers));
+        loop.runLoop();
     }
 }

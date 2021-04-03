@@ -1,8 +1,10 @@
 package ru.sbt.mipt.oop.signalling;
 
-public class AlarmDisabledState extends AlarmState {
+public class AlarmDisabledState implements AlarmState {
+    private final Alarm alarm;
+
     public AlarmDisabledState(Alarm alarm) {
-        super(alarm);
+        this.alarm = alarm;
     }
 
     @Override

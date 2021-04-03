@@ -30,7 +30,7 @@ public class Alarm implements Actionable {
         state.turnAlarmOn();
     }
 
-    public void changeState(AlarmState state) {
+    void changeState(AlarmState state) {
         this.state = state;
     }
 
@@ -39,7 +39,11 @@ public class Alarm implements Actionable {
         action.run(this);
     }
 
-    public String getState() {
-        return state.toString();
+    public boolean isEnabled() {
+        return state instanceof AlarmEnabledState;
+    }
+
+    public boolean isRinging() {
+        return state instanceof AlarmRingingState;
     }
 }
