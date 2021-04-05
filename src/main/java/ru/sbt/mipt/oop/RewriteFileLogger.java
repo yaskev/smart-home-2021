@@ -14,9 +14,11 @@ public class RewriteFileLogger implements Logger {
     }
 
     @Override
-    public void log(String msg) throws IOException {
+    public void log(String msg) {
         try (BufferedWriter writer = Files.newBufferedWriter(path)) {
             writer.write(msg);
+        } catch (IOException e) {
+            System.err.println(e.toString());;
         }
     }
 }

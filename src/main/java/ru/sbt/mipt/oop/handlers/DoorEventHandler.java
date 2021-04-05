@@ -1,49 +1,30 @@
 package ru.sbt.mipt.oop.handlers;
 
 import ru.sbt.mipt.oop.*;
+import ru.sbt.mipt.oop.action.Action;
 import ru.sbt.mipt.oop.equipment.Door;
-import ru.sbt.mipt.oop.equipment.Room;
 import ru.sbt.mipt.oop.events.Event;
-
-import java.io.IOException;
+import ru.sbt.mipt.oop.events.SensorEvent;
 
 public class DoorEventHandler implements EventHandler {
     private final SmartHome smartHome;
-    private final Logger logger;
 
-    public DoorEventHandler(SmartHome smartHome, Logger logger) {
+    public DoorEventHandler(SmartHome smartHome) {
         this.smartHome = smartHome;
-        this.logger = logger;
     }
 
     @Override
     public void handleEvent(Event event) {
-        if (event.getEventType() == SensorEventType.DOOR_OPEN) {
-            for (Room room : smartHome.getRooms()) {
-                for (Door door : room.getDoors()) {
-                    if (door.getId().equals(event.getObjectId())) {
-                        door.setOpen(true);
-                        try {
-                            logger.log("Door " + door.getId() + " in room " + room.getName() + " was opened.");
-                        } catch (IOException e) {
-                            System.err.println(e.toString());
-                        }
-                    }
+        if (event.getEventType() == EventType.DOOR_OPEN || event.getEventType() == EventType.DOOR_CLOSED) {
+            boolean isDoorOpen = event.getEventType() == EventType.DOOR_OPEN;
+            String objId = ((SensorEvent)event).getObjectId();
+
+            Action updateDoorState = (object) -> {
+                if (object instanceof Door && ((Door) object).getId().equals(objId)) {
+                    ((Door)object).setOpen(isDoorOpen);
                 }
-            }
-        } else if (event.getEventType() == SensorEventType.DOOR_CLOSED) {
-            for (Room room : smartHome.getRooms()) {
-                for (Door door : room.getDoors()) {
-                    if (door.getId().equals(event.getObjectId())) {
-                        door.setOpen(false);
-                        try {
-                            logger.log("Door " + door.getId() + " in room " + room.getName() + " was closed.");
-                        } catch (IOException e) {
-                            System.err.println(e.toString());
-                        }
-                    }
-                }
-            }
+            };
+            smartHome.execute(updateDoorState);
         }
     }
 }
