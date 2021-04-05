@@ -8,6 +8,7 @@ import ru.sbt.mipt.oop.events.DoorOpenedEvent;
 import ru.sbt.mipt.oop.events.LightOffEvent;
 import ru.sbt.mipt.oop.events.LightOnEvent;
 import ru.sbt.mipt.oop.handlers.*;
+import ru.sbt.mipt.oop.wrappers.NotWrappedHandler;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -55,9 +56,9 @@ public class EventHandlingTest {
         EventGenerator generator = new FixedEventGenerator(Collections.singletonList(new LightOnEvent("2")));
         addHandlers();
         fillSmartHome();
-
-        smartHome.setEventLoop(new EventLoop(generator, eventHandlers));
-        smartHome.runLoop();
+        EventHandler handlerWrapper = new NotWrappedHandler(eventHandlers);
+        EventLoop eventLoop = new EventLoop(generator, handlerWrapper);
+        eventLoop.runLoop();
 
         assertTrue(lightWithId1.isOn());
         assertTrue(lightWithId2.isOn());
@@ -72,9 +73,9 @@ public class EventHandlingTest {
                                                                         new LightOffEvent("2")));
         addHandlers();
         fillSmartHome();
-
-        smartHome.setEventLoop(new EventLoop(generator, eventHandlers));
-        smartHome.runLoop();
+        EventHandler handlerWrapper = new NotWrappedHandler(eventHandlers);
+        EventLoop eventLoop = new EventLoop(generator, handlerWrapper);
+        eventLoop.runLoop();
 
         assertFalse(lightWithId1.isOn());
         assertFalse(lightWithId2.isOn());
@@ -90,9 +91,9 @@ public class EventHandlingTest {
                                                                         new DoorOpenedEvent("3")));
         addHandlers();
         fillSmartHome();
-
-        smartHome.setEventLoop(new EventLoop(generator, eventHandlers));
-        smartHome.runLoop();
+        EventHandler handlerWrapper = new NotWrappedHandler(eventHandlers);
+        EventLoop eventLoop = new EventLoop(generator, handlerWrapper);
+        eventLoop.runLoop();
 
         assertTrue(doorWithId1.isOpen());
         assertTrue(doorWithId2.isOpen());
@@ -109,9 +110,9 @@ public class EventHandlingTest {
                                                                         new DoorClosedEvent("3")));
         addHandlers();
         fillSmartHome();
-
-        smartHome.setEventLoop(new EventLoop(generator, eventHandlers));
-        smartHome.runLoop();
+        EventHandler handlerWrapper = new NotWrappedHandler(eventHandlers);
+        EventLoop eventLoop = new EventLoop(generator, handlerWrapper);
+        eventLoop.runLoop();
 
         assertFalse(doorWithId1.isOpen());
         assertTrue(doorWithId2.isOpen());
@@ -127,9 +128,9 @@ public class EventHandlingTest {
         EventGenerator generator = new FixedEventGenerator(Collections.singletonList(new DoorClosedEvent("3")));
         addHandlers();
         fillSmartHome();
-
-        smartHome.setEventLoop(new EventLoop(generator, eventHandlers));
-        smartHome.runLoop();
+        EventHandler handlerWrapper = new NotWrappedHandler(eventHandlers);
+        EventLoop eventLoop = new EventLoop(generator, handlerWrapper);
+        eventLoop.runLoop();
 
         assertFalse(doorWithId1.isOpen());
         assertTrue(doorWithId2.isOpen());
@@ -148,9 +149,9 @@ public class EventHandlingTest {
         EventGenerator generator = new FixedEventGenerator(Collections.singletonList(new DoorClosedEvent("2")));
         addHandlers();
         fillSmartHome();
-
-        smartHome.setEventLoop(new EventLoop(generator, eventHandlers));
-        smartHome.runLoop();
+        EventHandler handlerWrapper = new NotWrappedHandler(eventHandlers);
+        EventLoop eventLoop = new EventLoop(generator, handlerWrapper);
+        eventLoop.runLoop();
 
         assertFalse(doorWithId1.isOpen());
         assertFalse(doorWithId2.isOpen());

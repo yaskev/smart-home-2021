@@ -7,7 +7,9 @@ import ru.sbt.mipt.oop.events.AlarmActivatedEvent;
 import ru.sbt.mipt.oop.events.AlarmDeactivatedEvent;
 import ru.sbt.mipt.oop.events.LightOffEvent;
 import ru.sbt.mipt.oop.handlers.*;
+import ru.sbt.mipt.oop.notifiers.*;
 import ru.sbt.mipt.oop.signalling.Alarm;
+import ru.sbt.mipt.oop.wrappers.AlarmWrappedHandler;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,12 +33,12 @@ public class AlarmTest {
     Collection<EventHandler> eventHandlers = new ArrayList<>();
 
     private final Alarm alarm = new Alarm();
+    private final Notifier notifier = new SMSNotifier();
 
     void addHandlers() {
         eventHandlers.add(new DoorEventHandler(smartHome));
         eventHandlers.add(new HallDoorEventHandler(smartHome, sender));
         eventHandlers.add(new LightEventHandler(smartHome));
-        eventHandlers.add(new AlarmEventHandler(smartHome));
     }
 
     void fillSmartHome() {
@@ -48,80 +50,81 @@ public class AlarmTest {
                 "hall");
         smartHome.addRoom(justRoom);
         smartHome.addRoom(hall);
-        smartHome.setAlarm(alarm);
     }
 
     @Test
     void testAlarmEnables() {
-        assertEquals("AlarmDisabledState", alarm.getState());
+        assertFalse(alarm.isEnabled());
         EventGenerator generator = new FixedEventGenerator(Collections.singletonList(new AlarmActivatedEvent(1)));
         addHandlers();
         fillSmartHome();
+        EventHandler handlerWrapper = new AlarmWrappedHandler(alarm, eventHandlers, notifier);
 
-        smartHome.setEventLoop(new EventLoop(generator, eventHandlers));
-        smartHome.runLoop();
+        EventLoop eventLoop = new EventLoop(generator, handlerWrapper);
+        eventLoop.runLoop();
 
-        assertEquals("AlarmEnabledState", alarm.getState());
+        assertTrue(alarm.isEnabled());
+        assertFalse(alarm.isRinging());
     }
 
     @Test
     void testAlarmDisables() {
-        assertEquals("AlarmDisabledState", alarm.getState());
+        assertFalse(alarm.isEnabled());
         EventGenerator generator = new FixedEventGenerator(Arrays.asList(new AlarmActivatedEvent(1),
                                                                         new AlarmDeactivatedEvent(1)));
         addHandlers();
         fillSmartHome();
+        EventHandler handlerWrapper = new AlarmWrappedHandler(alarm, eventHandlers, notifier);
+        EventLoop eventLoop = new EventLoop(generator, handlerWrapper);
+        eventLoop.runLoop();
 
-        smartHome.setEventLoop(new EventLoop(generator, eventHandlers));
-        smartHome.runLoop();
-
-        assertEquals("AlarmDisabledState", alarm.getState());
+        assertFalse(alarm.isEnabled());
     }
 
     @Test
     void testAlarmRingsWhenWrongCode() {
-        assertEquals("AlarmDisabledState", alarm.getState());
+        assertFalse(alarm.isEnabled());
         EventGenerator generator = new FixedEventGenerator(Arrays.asList(new AlarmActivatedEvent(1),
                 new AlarmDeactivatedEvent(2)));
         addHandlers();
         fillSmartHome();
+        EventHandler handlerWrapper = new AlarmWrappedHandler(alarm, eventHandlers, notifier);
+        EventLoop eventLoop = new EventLoop(generator, handlerWrapper);
+        eventLoop.runLoop();
 
-        smartHome.setEventLoop(new EventLoop(generator, eventHandlers));
-        smartHome.runLoop();
-
-        assertEquals("AlarmRingingState", alarm.getState());
+        assertTrue(alarm.isRinging());
     }
 
     @Test
     void testSensorEventsIgnoredWhenAlarmRinging() {
         assertTrue(lightWithId1.isOn());
-        assertEquals("AlarmDisabledState", alarm.getState());
+        assertFalse(alarm.isEnabled());
 
         EventGenerator generator = new FixedEventGenerator(Arrays.asList(new AlarmActivatedEvent(1),
                 new AlarmDeactivatedEvent(2), new LightOffEvent("1")));
         addHandlers();
         fillSmartHome();
+        EventHandler handlerWrapper = new AlarmWrappedHandler(alarm, eventHandlers, notifier);
+        EventLoop eventLoop = new EventLoop(generator, handlerWrapper);
+        eventLoop.runLoop();
 
-        smartHome.setEventLoop(new EventLoop(generator, eventHandlers));
-        smartHome.runLoop();
-
-        assertEquals("AlarmRingingState", alarm.getState());
+        assertTrue(alarm.isRinging());
         assertTrue(lightWithId1.isOn());
     }
 
     @Test
     void testAlarmRingsWhenSensorEventHappens() {
-        assertEquals("AlarmDisabledState", alarm.getState());
+        assertFalse(alarm.isEnabled());
         assertTrue(lightWithId1.isOn());
         EventGenerator generator = new FixedEventGenerator(Arrays.asList(new AlarmActivatedEvent(1),
                 new LightOffEvent("1")));
         addHandlers();
         fillSmartHome();
+        EventHandler handlerWrapper = new AlarmWrappedHandler(alarm, eventHandlers, notifier);
+        EventLoop eventLoop = new EventLoop(generator, handlerWrapper);
+        eventLoop.runLoop();
 
-        smartHome.setEventLoop(new EventLoop(generator, eventHandlers));
-        smartHome.runLoop();
-
-        assertEquals("AlarmRingingState", alarm.getState());
+        assertTrue(alarm.isRinging());
         assertFalse(lightWithId1.isOn());
     }
 }
