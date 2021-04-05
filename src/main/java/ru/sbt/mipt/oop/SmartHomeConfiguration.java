@@ -3,21 +3,18 @@ package ru.sbt.mipt.oop;
 import com.coolcompany.smarthome.events.SensorEventsManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import ru.sbt.mipt.oop.adapters.MakeCoolCompanyEventHandler;
+import ru.sbt.mipt.oop.adapters.CCEventHandlerAdapter;
 import ru.sbt.mipt.oop.handlers.DoorEventHandler;
 import ru.sbt.mipt.oop.handlers.*;
 
 @Configuration
 public class SmartHomeConfiguration {
     @Bean
-    SensorEventsManager sensorEventsManager(SmartHome smartHome, CommandSender sender) {
+    SensorEventsManager sensorEventsManager() {
         SensorEventsManager manager = new SensorEventsManager();
-        EventHandler doorEventHandler = new DoorEventHandler(smartHome);
-        EventHandler hallDoorEventHandler = new HallDoorEventHandler(smartHome, sender);
-        EventHandler lightEventHandler = new LightEventHandler(smartHome);
-        manager.registerEventHandler(new MakeCoolCompanyEventHandler(doorEventHandler));
-        manager.registerEventHandler(new MakeCoolCompanyEventHandler(hallDoorEventHandler));
-        manager.registerEventHandler(new MakeCoolCompanyEventHandler(lightEventHandler));
+        manager.registerEventHandler(new CCEventHandlerAdapter(doorEventHandler));
+        manager.registerEventHandler(new CCEventHandlerAdapter(hallDoorEventHandler));
+        manager.registerEventHandler(new CCEventHandlerAdapter(lightEventHandler));
 
         return manager;
     }
@@ -30,6 +27,21 @@ public class SmartHomeConfiguration {
     @Bean
     CommandSender sender() {
         return new ConsoleCommandSender();
+    }
+
+    @Bean
+    DoorEventHandler doorEventHandler(SmartHome smartHome) {
+        return new DoorEventHandler(smartHome);
+    }
+
+    @Bean
+    HallDoorEventHandler hallDoorEventHandler(SmartHome smartHome, CommandSender sender) {
+        return new HallDoorEventHandler(smartHome, sender);
+    }
+
+    @Bean
+    LightEventHandler lightEventHandler(SmartHome smartHome) {
+        return new LightEventHandler(smartHome);
     }
 
 }

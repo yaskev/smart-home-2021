@@ -11,9 +11,7 @@ public class Application {
 
     public static void main(String... args) {
         AbstractApplicationContext context = new AnnotationConfigApplicationContext(SmartHomeConfiguration.class);
-        SensorEventsManager sensorEventsManager = context.getBean(SensorEventsManager.class,
-                                                                    context.getBean(SmartHome.class),
-                                                                    context.getBean(CommandSender.class));
+        SensorEventsManager sensorEventsManager = context.getBean(SensorEventsManager.class);
         sensorEventsManager.start();
     }
 }
