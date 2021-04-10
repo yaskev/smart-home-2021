@@ -20,7 +20,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
 public class AlarmTest {
-    private final SmartHome smartHome = new SmartHome();
+    private final Alarm alarm = new Alarm();
+    private final SmartHome smartHome = new SmartHome(alarm);
 
     private final Door doorWithId1 = new Door(false, "1");
     private final Door doorWithId2 = new Door(true, "2");
@@ -32,7 +33,6 @@ public class AlarmTest {
     private final CommandSender sender = new ConsoleCommandSender();
     Collection<EventHandler> eventHandlers = new ArrayList<>();
 
-    private final Alarm alarm = new Alarm();
     private final Notifier notifier = new SMSNotifier();
 
     void addHandlers() {

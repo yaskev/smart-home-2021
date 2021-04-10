@@ -21,7 +21,7 @@ public class HomeBuilder {
                 Arrays.asList(new Door(false, "4")),
                 "hall");
 
-        SmartHome smartHome = new SmartHome(Arrays.asList(kitchen, bathroom, bedroom, hall));
+        SmartHome smartHome = new SmartHome(Arrays.asList(kitchen, bathroom, bedroom, hall), null);
         String jsonString = new JsonSerializer().serialize(smartHome);
         new ConsoleLogger().log(jsonString);
         new RewriteFileLogger("output.js").log(jsonString);
