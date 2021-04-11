@@ -1,4 +1,5 @@
 import org.junit.jupiter.api.Test;
+import rc.RemoteControlRegistry;
 import ru.sbt.mipt.oop.*;
 import ru.sbt.mipt.oop.commands.*;
 import ru.sbt.mipt.oop.equipment.Door;
@@ -27,6 +28,8 @@ public class RemoteControlTest {
     private final RealRemoteControl rc1 = new RealRemoteControl();
     private final RealRemoteControl rc2 = new RealRemoteControl();
 
+    private final RemoteControlRegistry registry = new RemoteControlRegistry();
+
     private final Command cmd1 = new TurnOffAllLightCommand(smartHome);
     private final Command cmd2 = new CloseHallDoorCommand(smartHome);
     private final Command cmd3 = new EnableAlarmCommand(smartHome);
@@ -50,6 +53,7 @@ public class RemoteControlTest {
         assertTrue(lightWithId1.isOn());
         assertFalse(lightWithId2.isOn());
         fillSmartHome();
+        registry.registerRemoteControl(rc1, "1");
 
         rc1.assignCommandToButton("A", cmd1);
         rc1.onButtonPressed("A", "");
@@ -63,6 +67,7 @@ public class RemoteControlTest {
         assertTrue(lightWithId1.isOn());
         assertFalse(lightWithId2.isOn());
         fillSmartHome();
+        registry.registerRemoteControl(rc1, "1");
 
         rc1.assignCommandToButton("B", cmd5);
         rc1.onButtonPressed("B", "");
@@ -77,6 +82,7 @@ public class RemoteControlTest {
         lightWithId2.setOn(false);
 
         fillSmartHome();
+        registry.registerRemoteControl(rc1, "1");
         rc1.assignCommandToButton("A", cmd6);
         rc1.onButtonPressed("A", "");
 
@@ -91,6 +97,7 @@ public class RemoteControlTest {
         hallDoor.setOpen(true);
 
         fillSmartHome();
+        registry.registerRemoteControl(rc1, "1");
         rc1.assignCommandToButton("A", cmd2);
         rc1.onButtonPressed("A", "");
 
@@ -104,6 +111,7 @@ public class RemoteControlTest {
         assertFalse(alarm.isEnabled());
         assertFalse(alarm.isRinging());
 
+        registry.registerRemoteControl(rc1, "1");
         rc1.assignCommandToButton("A", cmd3);
         rc1.onButtonPressed("A", "");
 
@@ -115,6 +123,8 @@ public class RemoteControlTest {
     void testAlarmRinging() {
         assertFalse(alarm.isEnabled());
         assertFalse(alarm.isRinging());
+
+        registry.registerRemoteControl(rc1, "1");
 
         rc1.assignCommandToButton("A", cmd4);
         rc1.onButtonPressed("A", "");
@@ -129,6 +139,8 @@ public class RemoteControlTest {
         lightWithId2.setOn(false);
 
         fillSmartHome();
+        registry.registerRemoteControl(rc1, "1");
+        registry.registerRemoteControl(rc2, "2");
         rc1.assignCommandToButton("A", cmd5);
         rc2.assignCommandToButton("A", cmd1);
         rc1.onButtonPressed("A", "");
