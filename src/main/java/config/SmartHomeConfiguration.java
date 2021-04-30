@@ -1,8 +1,9 @@
-package ru.sbt.mipt.oop;
+package config;
 
 import com.coolcompany.smarthome.events.SensorEventsManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import ru.sbt.mipt.oop.*;
 import ru.sbt.mipt.oop.adapters.CCEventHandlerAdapter;
 import ru.sbt.mipt.oop.factory.*;
 import ru.sbt.mipt.oop.handlers.DoorEventHandler;

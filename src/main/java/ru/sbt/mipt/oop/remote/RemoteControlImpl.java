@@ -5,7 +5,7 @@ import ru.sbt.mipt.oop.commands.Command;
 
 import java.util.*;
 
-public class RealRemoteControl implements RemoteControl {
+public class RemoteControlImpl implements RemoteControl {
     private final Map<String, Command> buttonCodeToCommandMap = new HashMap<>();
     private final Set<String> possibleCodes = new HashSet<>(Arrays.asList("A", "B", "C", "D", "1", "2", "3", "4"));
 

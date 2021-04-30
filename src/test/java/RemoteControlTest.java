@@ -5,7 +5,7 @@ import ru.sbt.mipt.oop.commands.*;
 import ru.sbt.mipt.oop.equipment.Door;
 import ru.sbt.mipt.oop.equipment.Light;
 import ru.sbt.mipt.oop.equipment.Room;
-import ru.sbt.mipt.oop.remote.RealRemoteControl;
+import ru.sbt.mipt.oop.remote.RemoteControlImpl;
 import ru.sbt.mipt.oop.signalling.Alarm;
 
 import java.util.Arrays;
@@ -25,8 +25,8 @@ public class RemoteControlTest {
     private final Light lightWithId1 = new Light("1", true);
     private final Light lightWithId2 = new Light("2", false);
 
-    private final RealRemoteControl rc1 = new RealRemoteControl();
-    private final RealRemoteControl rc2 = new RealRemoteControl();
+    private final RemoteControlImpl rc1 = new RemoteControlImpl();
+    private final RemoteControlImpl rc2 = new RemoteControlImpl();
 
     private final RemoteControlRegistry registry = new RemoteControlRegistry();
 
