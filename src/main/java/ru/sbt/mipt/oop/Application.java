@@ -1,28 +1,17 @@
 package ru.sbt.mipt.oop;
 
-import ru.sbt.mipt.oop.handlers.DoorEventHandler;
-import ru.sbt.mipt.oop.handlers.EventHandler;
-import ru.sbt.mipt.oop.handlers.HallDoorEventHandler;
-import ru.sbt.mipt.oop.handlers.LightEventHandler;
-import ru.sbt.mipt.oop.wrappers.NotWrappedHandler;
-
-import java.util.ArrayList;
-import java.util.Collection;
+import com.coolcompany.smarthome.events.SensorEventsManager;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.support.AbstractApplicationContext;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 
+@SpringBootApplication
 public class Application {
 
     public static void main(String... args) {
-        SmartHome smartHome = new JsonHomeReader("smart-home-1.js").read();
-        CommandSender sender = new ConsoleCommandSender();
-        EventGenerator generator = new RandomEventGenerator();
-
-        Collection<EventHandler> eventHandlers = new ArrayList<>();
-        eventHandlers.add(new DoorEventHandler(smartHome));
-        eventHandlers.add(new HallDoorEventHandler(smartHome, sender));
-        eventHandlers.add(new LightEventHandler(smartHome));
-
-        EventLoop loop = new EventLoop(generator, new NotWrappedHandler(eventHandlers));
-        loop.runLoop();
+        AbstractApplicationContext context = new AnnotationConfigApplicationContext(SmartHomeConfiguration.class);
+        SensorEventsManager sensorEventsManager = context.getBean(SensorEventsManager.class);
+        sensorEventsManager.start();
     }
 }
