@@ -4,7 +4,7 @@ import com.coolcompany.smarthome.events.SensorEventsManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import ru.sbt.mipt.oop.adapters.CCEventHandlerAdapter;
-import ru.sbt.mipt.oop.events.*;
+import ru.sbt.mipt.oop.factory.*;
 import ru.sbt.mipt.oop.handlers.DoorEventHandler;
 import ru.sbt.mipt.oop.handlers.*;
 import ru.sbt.mipt.oop.notifiers.Notifier;
@@ -15,21 +15,14 @@ import ru.sbt.mipt.oop.wrappers.AlarmWrappedHandler;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 
 @Configuration
 public class SmartHomeConfiguration {
     @Bean
     SensorEventsManager sensorEventsManager() {
-        HashMap<String, String> eventClasses = new HashMap<>();
-        eventClasses.put("LightIsOn", LightOnEvent.class.getCanonicalName());
-        eventClasses.put("LightIsOff", LightOffEvent.class.getCanonicalName());
-        eventClasses.put("DoorIsOpen", DoorOpenedEvent.class.getCanonicalName());
-        eventClasses.put("DoorIsClosed", DoorClosedEvent.class.getCanonicalName());
-
         SensorEventsManager manager = new SensorEventsManager();
-        manager.registerEventHandler(new CCEventHandlerAdapter(alarmWrappedHandler(alarm(), Arrays.asList(doorEventHandler(smartHome()),
-                hallDoorEventHandler(smartHome(), sender()), lightEventHandler(smartHome())), notifier()), eventClasses));
-
+        manager.registerEventHandler(ccEventHandlerAdapter());
         return manager;
     }
 
@@ -71,6 +64,32 @@ public class SmartHomeConfiguration {
     @Bean
     Notifier notifier() {
         return new SMSNotifier();
+    }
+
+    @Bean
+    Map<String, EventFactory> ccTypeToEventFactoryMap() {
+        Map<String, EventFactory> eventFactories = new HashMap<>();
+        eventFactories.put("LightIsOn", new LightOnFactory());
+        eventFactories.put("LightIsOff", new LightOffFactory());
+        eventFactories.put("DoorIsOpen", new DoorOpenedFactory());
+        eventFactories.put("DoorIsClosed", new DoorClosedFactory());
+        return eventFactories;
+    }
+
+    @Bean
+    CCEventHandlerAdapter ccEventHandlerAdapter() {
+        return new CCEventHandlerAdapter(alarmWrappedHandler(), ccTypeToEventFactoryMap());
+    }
+
+    @Bean
+    Collection<EventHandler> eventHandlers() {
+        return Arrays.asList(doorEventHandler(smartHome()),
+                hallDoorEventHandler(smartHome(), sender()), lightEventHandler(smartHome()));
+    }
+
+    @Bean
+    EventHandler alarmWrappedHandler() {
+        return new AlarmWrappedHandler(alarm(), eventHandlers(), notifier());
     }
 
 }

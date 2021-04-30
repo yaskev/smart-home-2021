@@ -3,18 +3,17 @@ package ru.sbt.mipt.oop.adapters;
 import com.coolcompany.smarthome.events.CCSensorEvent;
 import com.coolcompany.smarthome.events.EventHandler;
 import ru.sbt.mipt.oop.events.Event;
+import ru.sbt.mipt.oop.factory.EventFactory;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
+import java.util.Map;
 
 public class CCEventHandlerAdapter implements EventHandler {
     private final ru.sbt.mipt.oop.handlers.EventHandler baseHandler;
-    private final HashMap<String, String> getEventClass;
+    private final Map<String, EventFactory> ccEventToFactoryMap;
 
-    public CCEventHandlerAdapter(ru.sbt.mipt.oop.handlers.EventHandler baseHandler, HashMap<String, String> eventClasses) {
+    public CCEventHandlerAdapter(ru.sbt.mipt.oop.handlers.EventHandler baseHandler, Map<String, EventFactory> eventFactories) {
         this.baseHandler = baseHandler;
-        this.getEventClass = eventClasses;
+        this.ccEventToFactoryMap = eventFactories;
     }
 
     @Override
@@ -26,21 +25,8 @@ public class CCEventHandlerAdapter implements EventHandler {
     }
 
     private Event getSmartHomeEvent(CCSensorEvent event) {
-        if (getEventClass.containsKey(event.getEventType())) {
-            Class<?> eventClass = null;
-            try {
-                eventClass = Class.forName(getEventClass.get(event.getEventType()));
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-            if (eventClass != null) {
-                try {
-                    Constructor<?> constr = eventClass.getConstructor(String.class);
-                    return (Event) constr.newInstance(event.getObjectId());
-                } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                    e.printStackTrace();
-                }
-            }
+        if (ccEventToFactoryMap.containsKey(event.getEventType())) {
+           return ccEventToFactoryMap.get(event.getEventType()).getEvent(event.getObjectId());
         }
         return null;
     }
