@@ -154,3 +154,4 @@ public class RemoteControlTest {
         assertFalse(lightWithId2.isOn());
     }
 }
+
