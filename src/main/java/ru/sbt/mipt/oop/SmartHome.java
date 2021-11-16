@@ -6,16 +6,25 @@ import java.util.Collection;
 import ru.sbt.mipt.oop.action.Action;
 import ru.sbt.mipt.oop.action.Actionable;
 import ru.sbt.mipt.oop.equipment.*;
+import ru.sbt.mipt.oop.signalling.Alarm;
 
 public class SmartHome implements Actionable {
     Collection<Room> rooms;
+    Alarm alarm;
 
     public SmartHome() {
         rooms = new ArrayList<>();
+        alarm = null;
     }
 
-    public SmartHome(Collection<Room> rooms) {
+    public SmartHome(Alarm alarm) {
+        rooms = new ArrayList<>();
+        this.alarm = alarm;
+    }
+
+    public SmartHome(Collection<Room> rooms, Alarm alarm) {
         this.rooms = rooms;
+        this.alarm = alarm;
     }
 
     public void addRoom(Room room) {
@@ -28,6 +37,10 @@ public class SmartHome implements Actionable {
 
         for (Room room : rooms) {
             room.execute(action);
+        }
+
+        if (alarm != null) {
+            alarm.execute(action);
         }
     }
 }
