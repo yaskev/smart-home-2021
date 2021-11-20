@@ -8,9 +8,9 @@
       become: yes
 
     - name: "copy jar"
-        copy:
-          src: ../target/smart-home-1.0-SNAPSHOT-jar-with-dependencies.jar
-          dest: smart-home.jar
+      copy:
+        src: ../target/smart-home-1.0-SNAPSHOT-jar-with-dependencies.jar
+        dest: smart-home.jar
 
     - name: "copy conf file"
       copy:
