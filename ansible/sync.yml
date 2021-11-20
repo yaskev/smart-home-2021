@@ -9,14 +9,13 @@
 
     - name: "copy jar"
       copy:
-        src: ../target/smart-home-1.0-SNAPSHOT.jar
-        dest: smart-home.jar
-        remote_src: yes
+        src: /var/lib/jenkins/workspace/ayaskevich/freestyle-job/target/smart-home-1.0-SNAPSHOT.jar
+        dest: ayaskevich/smart-home.jar
 
     - name: "copy conf file"
       copy:
-        src: ../smart-home-1.js
-        dest: smart-home-1.js
+        src: /var/lib/jenkins/workspace/ayaskevich/freestyle-job/smart-home-1.js
+        dest: ayaskevich/smart-home-1.js
 
     - name: "launch java app"
-      shell: java -jar smart-home.jar
+      shell: java -jar ayaskevich/smart-home.jar
