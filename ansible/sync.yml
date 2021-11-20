@@ -1,25 +1,5 @@
-#- hosts: centos
-#  tasks:
-#    - name: "sudo yum install java 11"
-#        yum:
-#          name: java-11-openjdk-devel
-#          state: latest
-#        become: yes
-#
-#    - name: "copy jar"
-#      copy:
-#        src: ../target/smart-home-1.0-SNAPSHOT-jar-with-dependencies.jar
-#        dest: smart-home.jar
-#
-#    - name: "copy conf file"
-#      copy:
-#        src: ../smart-home-1.js
-#        dest: smart-home-1.js
-#
-#    - name: "launch java app"
-#      shell: java -jar smart-home.jar
-
-- hosts: 194.87.107.68
+---
+- hosts: debian
   tasks:
     - name: "sudo apt install java 11"
       apt:
