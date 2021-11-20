@@ -9,8 +9,9 @@
 
     - name: "copy jar"
       copy:
-        src: ../target/smart-home-1.0-SNAPSHOT-jar-with-dependencies.jar
+        src: ../target/smart-home-1.0-SNAPSHOT.jar
         dest: smart-home.jar
+        remote_src: yes
 
     - name: "copy conf file"
       copy:
