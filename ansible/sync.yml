@@ -16,6 +16,3 @@
       copy:
         src: /var/lib/jenkins/workspace/ayaskevich/freestyle-job/smart-home-1.js
         dest: ayaskevich/smart-home-1.js
-
-    - name: "launch java app"
-      shell: java -jar ayaskevich/smart-home.jar
