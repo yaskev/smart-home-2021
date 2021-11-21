@@ -28,6 +28,6 @@ node {
         ])
     }
     stage('Deploy app using ansible'){
-        ansiblePlaybook(inventory: 'ansible/inventory.yml', playbook: 'ansible/sync.yml', vaultCredentialsId: '12345')
+        ansiblePlaybook(vaultCredentialsId: '12345', inventory: 'ansible/inventory', playbook: 'ansible/sync.yml')
     }
 }
