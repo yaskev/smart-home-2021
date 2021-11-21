@@ -12,22 +12,22 @@ node {
             sh 'mvn clean package'
         }
     }
-    stage('Code Quality Check via Sonar'){
-        def scannerHome = tool 'MySonar'
-        withSonarQubeEnv('MySonar') {
-            sh "${scannerHome}/bin/sonar-scanner"
-        }
-    }
-    stage('Visualize tests results using allure'){
-        allure([
-            includeProperties: false,
-            jdk: '',
-            properties: [],
-            reportBuildPolicy: 'ALWAYS',
-            results: [[path: 'target/allure-results']]
-        ])
-    }
+//     stage('Code Quality Check via Sonar'){
+//         def scannerHome = tool 'MySonar'
+//         withSonarQubeEnv('MySonar') {
+//             sh "${scannerHome}/bin/sonar-scanner"
+//         }
+//     }
+//     stage('Visualize tests results using allure'){
+//         allure([
+//             includeProperties: false,
+//             jdk: '',
+//             properties: [],
+//             reportBuildPolicy: 'ALWAYS',
+//             results: [[path: 'target/allure-results']]
+//         ])
+//     }
     stage('Deploy app using ansible'){
-        ansiblePlaybook(vaultCredentialsId: '12345', inventory: 'ansible/inventory', playbook: 'ansible/sync.yml')
+        ansiblePlaybook(vaultCredentialsId: '12345', inventory: 'ansible/inventory.yml', playbook: 'ansible/sync.yml')
     }
 }
