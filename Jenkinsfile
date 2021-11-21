@@ -16,7 +16,7 @@ node {
         def scannerHome = tool 'MySonar'
         withSonarQubeEnv('MySonar') {
             sh "${scannerHome}/bin/sonar-scanner \
-            -Dsonar.projectKey=smart-home \
+            -Dsonar.projectKey=smart-home-2021 \
             -Dsonar.sources=src/main/ \
             -Dsonar.tests=src/test/ \
             -Dsonar.java.binaries=target/classes \
