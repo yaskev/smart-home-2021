@@ -17,12 +17,12 @@ node {
         withSonarQubeEnv('MySonar') {
             sh "${scannerHome}/bin/sonar-scanner \
             -Dsonar.projectKey=smart-home-2021 \
-            -Dsonar.sources=src/main/ \
-            -Dsonar.tests=src/test/ \
-            -Dsonar.java.binaries=target/classes \
-            -Dsonar.junit.reportsPath=target/surefire-reports \
-            -Dsonar.surefire.reportsPath=target/surefire-reports \
-            -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml"
+            -Dsonar.sources=smart-home-2021/src/main/java/ \
+            -Dsonar.tests=smart-home-2021/src/test/java/ \
+            -Dsonar.java.binaries=smart-home-2021/target/classes \
+            -Dsonar.junit.reportsPath=smart-home-2021/target/surefire-reports \
+            -Dsonar.surefire.reportsPath=smart-home-2021/target/surefire-reports \
+            -Dsonar.coverage.jacoco.xmlReportPaths=smart-home-2021/target/site/jacoco/jacoco.xml"
         }
     }
     stage('Visualize tests results using allure'){
