@@ -17,13 +17,12 @@ node {
         withSonarQubeEnv('MySonar') {
             sh "${scannerHome}/bin/sonar-scanner \
             -Dsonar.projectKey=smart-home \
-            -Dsonar.sources=src/main \
-            -Dsonar.tests=src/test \
+            -Dsonar.sources=src/main/ \
+            -Dsonar.tests=src/test/ \
             -Dsonar.java.binaries=target/classes \
             -Dsonar.junit.reportsPath=target/surefire-reports \
             -Dsonar.surefire.reportsPath=target/surefire-reports \
-            -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
-            -Dsonar.host.url=http://194.87.57.31:9000"
+            -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml"
         }
     }
     stage('Visualize tests results using allure'){
